@@ -4,9 +4,13 @@ info.debug("Submit.js started");
 
 //Set the values
 document.getElementById(info.town_webID).value = info.town_webValue;
+//info.debug("Submit.js started2");
+document.getElementById(info.minRooms_webID).value = info.minRooms_webValue;
+//info.debug("Submit.js started3");
 document.getElementById(info.maxRent_webID).value = info.maxRent_webValue;
-document.getElementById(info.minRooms_webID).value = info.minRooms_webValue;	
-//info.debug(document.getElementById(info.town_webID).value);
+//info.debug("Submit.js started4");
+info.debug(document.getElementById(info.town_webID).value);
+//info.debug("Submit.js started5");
 
 //Submit the form
 document.getElementById(info.submit).click();

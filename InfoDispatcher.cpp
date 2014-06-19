@@ -23,11 +23,11 @@ namespace COMPARIS{
 
 
 const QString URL("http://www.comparis.ch/immobilien/marktplatz/search.aspx?searchtab=search&mode=expand");
-const QString SUBMIT("ctl00_ContentPlaceHolderApplication_SearchControl_Search_btnSearch");
-const QString TOWN_ID("ctl00_ContentPlaceHolderApplication_SearchControl_Search_txtTownOrPostalCode");
-const QString MIN_ROOMS("ctl00_ContentPlaceHolderApplication_SearchControl_Search_txtRoomFrom");
-const QString MAX_RENT("ctl00_ContentPlaceHolderApplication_SearchControl_Search_txtPriceTo");
-const QString OBJECT_TYPE("ctl00_ContentPlaceHolderApplication_SearchControl_Search_ddlPropertyType");
+const QString SUBMIT("btnShowResults");
+const QString TOWN_ID("SearchParams_LocationSearchString");
+const QString MIN_ROOMS("SearchParams_RoomsFrom");
+const QString MAX_RENT("SearchParams_PriceTo");
+const QString OBJECT_TYPE("ddlPropertyType");
 
 const QString START_TITLE("Preisvergleich Schweiz, Versicherungen und Krankenkassenvergleich - comparis.ch");
 
