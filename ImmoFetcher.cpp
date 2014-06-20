@@ -58,7 +58,7 @@ void ImmoFetcher::run(QWebFrame*frame)
 
 void ImmoFetcher::foundResult(const QString &description, const QString &address, const QString &price, const QString &link)
 {
-   qDebug() << "Found a flat (" << description << " at: " << address << " for " << price << ". See " << link << " for more details.";
+   qDebug() << "Found a flat (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
 }
 
 //void ImmoFetcher::storeLink(const QString &link)

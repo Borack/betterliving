@@ -1,8 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="Submit.js">Scripts/Submit.js</file>
         <file alias="orange_icon.jpg">images/better living 256*256.jpg</file>
         <file alias="better_living_round.png">images/better living round.png</file>
         <file alias="ComparisFetcher.js">Scripts/ComparisFetcher.js</file>
+        <file alias="ComparisSubmit.js">Scripts/ComparisSubmit.js</file>
+        <file alias="HomegateFetcher.js">Scripts/HomegateFetcher.js</file>
     </qresource>
 </RCC>
