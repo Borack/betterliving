@@ -67,7 +67,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
 
 int main(int argc, char *argv[])
 {
-   qInstallMessageHandler(myMessageOutput);
+//   qInstallMessageHandler(myMessageOutput);
    QApplication app(argc, argv);
    Q_INIT_RESOURCE(BetterLiving);
    app.setWindowIcon(QIcon(":/better_living_round.png"));

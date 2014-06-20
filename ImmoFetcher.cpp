@@ -13,7 +13,7 @@ const QString RESULT_PRICE_ID("ctl00_ContentPlaceHolderApplication_ResultListUse
 }
 
 namespace Scripts{
-const QString FETCH_SCRIPT(":/Fetcher.js");
+const QString FETCH_SCRIPT(":/ComparisFetcher.js");
 }
 
 ImmoFetcher::ImmoFetcher()
@@ -56,16 +56,21 @@ void ImmoFetcher::run(QWebFrame*frame)
 
 }
 
-void ImmoFetcher::storeLink(const QString &link)
+void ImmoFetcher::foundResult(const QString &description, const QString &address, const QString &price, const QString &link)
 {
-   m_newUrls << link;
+   qDebug() << "Found a flat (" << description << " at: " << address << " for " << price << ". See " << link << " for more details.";
 }
 
-void ImmoFetcher::finished()
-{
-   qDebug() << "Script finished";
-   qDebug() << m_newUrls.join("\n");
+//void ImmoFetcher::storeLink(const QString &link)
+//{
+//   m_newUrls << link;
+//}
 
-   QDesktopServices::openUrl(QUrl(m_newUrls.last()));
-}
+//void ImmoFetcher::finished()
+//{
+//   qDebug() << "Script finished";
+//   qDebug() << m_newUrls.join("\n");
+
+//   QDesktopServices::openUrl(QUrl(m_newUrls.last()));
+//}
 

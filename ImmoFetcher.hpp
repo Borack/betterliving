@@ -10,22 +10,24 @@ class QWebFrame;
 
 class ImmoFetcher : protected ScriptRunnerBase
 {
-      Q_OBJECT
+   Q_OBJECT
 
-   public:
-      ImmoFetcher();
-      ~ImmoFetcher();
+public:
+   ImmoFetcher();
+   ~ImmoFetcher();
 
-      void run(QWebFrame*frame);
+   void run(QWebFrame*frame);
 
-   public slots:
-   void   storeLink(const QString& link);
-   void finished();
+public slots:
+   void foundResult(const QString& description, const QString &address, const QString & price, const QString &link);
 
-   private:
+   ////   void   storeLink(const QString& link);
+   //   void finished();
 
-      QString m_oldUrl;
-      QStringList m_newUrls;
+private:
+
+   QString m_oldUrl;
+   QStringList m_newUrls;
 
 };
 #endif // IMMOFETCHER_HPP
