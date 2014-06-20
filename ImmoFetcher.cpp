@@ -7,6 +7,7 @@
 
 namespace ResultIDs
 {
+const QString RESULT_LIST_ID("result_list_ajax_container");
 const QString RESULT_TITLE_ID("ctl00_ContentPlaceHolderApplication_ResultListUserControl_ResultListRepeater_ctl%0_ProductListResultItem_PropertyDetailsLabel"); /* %0 has to be replaced with a 00, 02, 04 etc */
 const QString RESULT_PRICE_ID("ctl00_ContentPlaceHolderApplication_ResultListUserControl_ResultListRepeater_ctl%0_ProductListResultItem_PriceLabel"); /* %0 has to be replaced with a 00, 02, 04 etc */
 }
@@ -37,6 +38,7 @@ void ImmoFetcher::run(QWebFrame*frame)
 
    /* search until link is equal to old one or we have run 10 iterations or so */
 
+   setProperty("list_id",ResultIDs::RESULT_LIST_ID);
    setProperty("title_id",ResultIDs::RESULT_TITLE_ID.arg("00"));
 
    frame->addToJavaScriptWindowObject("info",this);
