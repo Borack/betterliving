@@ -45,6 +45,11 @@ private:
     bool m_running;
     QTimer m_timer;
 
+    static const QString TOWN_SETTINGS_KEY;
+    static const QString RENT_SETTINGS_KEY;
+    static const QString TYPE_SETTINGS_KEY;
+    static const QString ROOMS_SETTINGS_KEY;
+
 };
 
 #endif // MAINWINDOW_HPP

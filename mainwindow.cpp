@@ -3,12 +3,18 @@
 #include "InfoDispatcher.hpp"
 
 #include <QDebug>
+#include <QSettings>
 #include <QObject>
 
 namespace {
 const int g_interval = 5;
 const int g_statusTime = 5000;
 }
+
+const QString MainWindow::TOWN_SETTINGS_KEY("TOWN_SETTINGS_KEY");
+const QString MainWindow::RENT_SETTINGS_KEY("RENT_SETTINGS_KEY");
+const QString MainWindow::TYPE_SETTINGS_KEY("TYPE_SETTINGS_KEY");
+const QString MainWindow::ROOMS_SETTINGS_KEY("ROOMS_SETTINGS_KEY");
 
 MainWindow::MainWindow(QWidget *parent) :
    QMainWindow(parent),
@@ -78,6 +84,13 @@ void MainWindow::setupUI()
    ui->intervalSpinBox->setValue(g_interval);
    ui->intervalSpinBox->setMinimum(g_interval);
    ui->intervalSpinBox->setSingleStep(g_interval);
+
+   QSettings settings;
+   ui->townEdit->setText(settings.value(TOWN_SETTINGS_KEY,"Zürich").toString());
+//   ui->typeCombo->setL settings.setValue(TYPE_SETTINGS_KEY,type);
+   ui->typeCombo->setCurrentIndex(0);
+   ui->rentEdit->setText(settings.value(RENT_SETTINGS_KEY,4000).toString());
+   ui->roomsEdit->setText(settings.value(ROOMS_SETTINGS_KEY,4).toString());
 }
 
 void MainWindow::runDispatcher()
@@ -86,6 +99,15 @@ void MainWindow::runDispatcher()
    QString type = ui->typeCombo->currentText();
    float maxRent = ui->rentEdit->text().toFloat();
    float minRooms = ui->roomsEdit->text().toFloat();
+
+   {
+      QSettings settings;
+      settings.setValue(TOWN_SETTINGS_KEY,town);
+      settings.setValue(TYPE_SETTINGS_KEY,type);
+      settings.setValue(RENT_SETTINGS_KEY,maxRent);
+      settings.setValue(ROOMS_SETTINGS_KEY,minRooms);
+   }
+
 
    m_infoDispatcher.setKeywords(town,maxRent,minRooms,type);
    m_infoDispatcher.run();

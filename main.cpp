@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
 {
 //   qInstallMessageHandler(myMessageOutput);
    QApplication app(argc, argv);
+   app.setOrganizationName("Borack");
+   app.setApplicationName("BetterLiving");
    Q_INIT_RESOURCE(BetterLiving);
    app.setWindowIcon(QIcon(":/better_living_round.png"));
 
