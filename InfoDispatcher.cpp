@@ -22,8 +22,7 @@ namespace COMPARIS{
 //const QString SUBMIT("ctl00_ctl02_usercontrol_btnShowResults");
 
 
-//const QString URL("http://www.comparis.ch/immobilien/marktplatz/search.aspx?searchtab=search&mode=expand");
-const QString URL("http://www.homegate.ch/mieten/wohnung-und-haus/bezirk-zuerich/trefferliste?mn=ctn_zh&ao=&oa=false&am=&tab=list&incsubs=default&fromItem=ctn_zh&be=&tid=1");
+const QString URL("http://www.comparis.ch/immobilien/marktplatz/search.aspx?searchtab=search&mode=expand");
 const QString SUBMIT("btnShowResults");
 const QString TOWN_ID("SearchParams_LocationSearchString");
 const QString MIN_ROOMS("SearchParams_RoomsFrom");
@@ -32,7 +31,13 @@ const QString OBJECT_TYPE("ddlPropertyType");
 
 const QString START_TITLE("Preisvergleich Schweiz, Versicherungen und Krankenkassenvergleich - comparis.ch");
 
+const QString SUBMIT_SCRIPT(":/ComparisSubmit.js");
+}
+
+namespace HOMEGATE {
+const QString URL("http://www.homegate.ch/mieten/wohnung-und-haus/bezirk-zuerich/trefferliste?mn=ctn_zh&ao=&oa=false&am=&tab=list&incsubs=default&fromItem=ctn_zh&be=&tid=1");
 const QString SUBMIT_SCRIPT(":/HomegateSubmit.js");
+const QString START_TITLE("Wohnung und Haus mieten in Bezirk Zürich | homegate.ch");
 }
 
 InfoDispatcher::InfoDispatcher()
@@ -116,8 +121,9 @@ void InfoDispatcher::supplyInfos(bool ok)
       return;
    }
 
-   if(true)
+      qDebug() << "MainFrame title: " << m_page.mainFrame()->title();
 //      if(m_page.mainFrame()->title() == COMPARIS::START_TITLE)
+      if(true)
    {
       if(m_loadCounter >= 2)
       {

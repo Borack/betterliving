@@ -14,6 +14,7 @@ const QString RESULT_PRICE_ID("ctl00_ContentPlaceHolderApplication_ResultListUse
 
 namespace Scripts{
 const QString FETCH_SCRIPT(":/ComparisFetcher.js");
+const QString HOMEGATE_FETCH_SCRIPT(":/HomegateFetcher.js");
 }
 
 ImmoFetcher::ImmoFetcher()

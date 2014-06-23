@@ -1,10 +1,17 @@
 //info.debug("ComparisFetcher.js started");
 //info.debug(document.getElementById(info.list_id).firstChild.text)
 
-var baseLink = 'http://www.comparis.ch'
+var baseLink = 'http://www.homegate.ch'
 
 var elems = document.getElementsByTagName('*'), i;
 for (i in elems) {
+
+   var attr = elems[i].attributes;
+   if(elems[i].hasAttribute("onclick") && attr.length == 1)
+   {
+       console.log("Found an attribute")
+   }
+
    if((' ' + elems[i].className + ' ').indexOf(' ' + 'box result-item' + ' ')
          > -1) {
 

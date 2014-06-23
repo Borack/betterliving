@@ -14,6 +14,6 @@ document.getElementById('searchfilter:searchMaskPanel:rentTo').value = info.maxR
 
 //Submit the form
 document.getElementById('searchfilter:searchMaskPanel:searchButton').click();
-info.debug("Submit.js finished");
+info.debug("HomegateSubmit.js finished");
 
 //document.getElementById("ctl00_ContentPlaceHolderApplication_ResultListUserControl_ResultListRepeater_ctl04_ProductListResultItem_PropertyDetailsLabel").firstChild.text
