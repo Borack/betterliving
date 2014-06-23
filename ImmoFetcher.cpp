@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QDesktopServices>
 
+
 namespace ResultIDs
 {
 const QString RESULT_LIST_ID("result_list_ajax_container");
@@ -61,20 +62,29 @@ void ImmoFetcher::run()
 
 void ImmoFetcher::foundResult(const QString &description, const QString &address, const QString &price, const QString &link)
 {
-   m_immoCounter++;
-   qDebug() << "Found flat #" << m_immoCounter << " (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
+   QString prix(price);
+   prix = prix.trimmed();
+   prix.replace("'","");
+   prix.replace("-","");
+   prix.replace(".","");
+   prix.replace(",","");
+
+   ApartmentListing apartement(description,prix.toInt(),QUrl(link), address);
+
+
+   if(!m_apartements.contains(apartement.id()))
+   {
+      qDebug() << "A new apartement found!";
+      qDebug() << "Found flat #" << m_immoCounter << " (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
+      m_immoCounter++;
+      m_apartements.insert(apartement.id(), apartement);
+   }
+   else
+   {
+//      qDebug() << "This apt is already known to me. boring.. ";
+   }
+
+
 }
 
-//void ImmoFetcher::storeLink(const QString &link)
-//{
-//   m_newUrls << link;
-//}
-
-//void ImmoFetcher::finished()
-//{
-//   qDebug() << "Script finished";
-//   qDebug() << m_newUrls.join("\n");
-
-//   QDesktopServices::openUrl(QUrl(m_newUrls.last()));
-//}
 

@@ -3,8 +3,11 @@
 
 #include "ScriptRunnerBase.hpp"
 
-#include <QUrl>
+#include <QMap>
 #include <QStringList>
+#include <QUrl>
+
+#include <apartmentlisting.hpp>
 
 class QWebFrame;
 
@@ -30,6 +33,9 @@ private:
    QString m_oldUrl;
    QStringList m_newUrls;
    int m_immoCounter;
+
+   QMap<QString, ApartmentListing> m_apartements;
+
 
 };
 #endif // IMMOFETCHER_HPP

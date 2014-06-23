@@ -15,12 +15,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     InfoDispatcher.cpp \
     ImmoFetcher.cpp \
-    ScriptRunnerBase.cpp
+    ScriptRunnerBase.cpp \
+    apartmentlisting.cpp
 
 HEADERS  += mainwindow.hpp \
     InfoDispatcher.hpp \
     ImmoFetcher.hpp \
-    ScriptRunnerBase.hpp
+    ScriptRunnerBase.hpp \
+    apartmentlisting.hpp
 
 FORMS    += mainwindow.ui
 
