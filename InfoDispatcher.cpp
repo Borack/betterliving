@@ -38,14 +38,14 @@ namespace HOMEGATE {
 const QString URL("http://www.homegate.ch/mieten/wohnung-und-haus/bezirk-zuerich/trefferliste?mn=ctn_zh&ao=&oa=false&am=&tab=list&incsubs=default&fromItem=ctn_zh&be=&tid=1");
 const QString SUBMIT_SCRIPT(":/HomegateSubmit.js");
 const QString START_TITLE("Wohnung und Haus mieten in Bezirk Zürich | homegate.ch");
+//Wohnung und Haus mieten in Bezirk Zürich | homegate.ch
 }
 
-InfoDispatcher::InfoDispatcher()
-: m_immoFetcher()
-, m_loadCounter(0)
+InfoDispatcher::InfoDispatcher(QWebPage *page)
+   : ScriptRunnerBase(page)
+   , m_loadCounter(0)
 {
    setupConnections();
-   setupWebPage();
 
 }
 
@@ -79,39 +79,29 @@ void InfoDispatcher::setupIDs()
 {
 
    //if(!m_town.isEmpty())
-      m_ids["town"] = NamedPair(COMPARIS::TOWN_ID, m_town);
+   m_ids["town"] = NamedPair(COMPARIS::TOWN_ID, m_town);
    //if(!m_type.isEmpty())
    //   qDebug() << "To be implmeneted in " << Q_FUNC_INFO;
    //if(m_minRooms > 0)
-      m_ids["minRooms"] = NamedPair(COMPARIS::MIN_ROOMS,QString::number(m_minRooms));
+   m_ids["minRooms"] = NamedPair(COMPARIS::MIN_ROOMS,QString::number(m_minRooms));
    //if(m_maxRent > 0)
-      m_ids["maxRent"] = NamedPair(COMPARIS::MAX_RENT, QString::number(m_maxRent));
+   m_ids["maxRent"] = NamedPair(COMPARIS::MAX_RENT, QString::number(m_maxRent));
 
    setupProperties();
 
 }
 
-void InfoDispatcher::setupWebPage()
-{
-   QWebSettings *webSettings = m_page.settings();
-   webSettings->setAttribute(QWebSettings::AutoLoadImages, false);
-   webSettings->setAttribute(QWebSettings::PluginsEnabled, false);
-   webSettings->setAttribute(QWebSettings::JavaEnabled, false);
-   webSettings->setAttribute(QWebSettings::JavascriptEnabled, true);
-   webSettings->setAttribute(QWebSettings::PrivateBrowsingEnabled,true);
-}
-
 void InfoDispatcher::setupConnections()
 {
-   connect(m_page.mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
+   connect(m_webPage->mainFrame(), SIGNAL(javaScriptWindowObjectCleared()),
            this, SLOT(injectJavaScriptIntoWindowObject()));
-   connect(&m_page, SIGNAL(loadFinished(bool)),
+   connect(m_webPage, SIGNAL(loadFinished(bool)),
            this, SLOT(supplyInfos(bool)));
 }
 
 void InfoDispatcher::injectJavaScriptIntoWindowObject()
 {
-   m_page.mainFrame()->addToJavaScriptWindowObject("info", this);
+   m_webPage->mainFrame()->addToJavaScriptWindowObject("info", this);
 }
 
 void InfoDispatcher::supplyInfos(bool ok)
@@ -121,18 +111,19 @@ void InfoDispatcher::supplyInfos(bool ok)
       return;
    }
 
-      qDebug() << "MainFrame title: " << m_page.mainFrame()->title();
-//      if(m_page.mainFrame()->title() == COMPARIS::START_TITLE)
-      if(true)
+   qDebug() << "MainFrame title: " << m_webPage->mainFrame()->title();
+   if(m_webPage->mainFrame()->title() == HOMEGATE::START_TITLE)
+      //      if(true)
    {
       if(m_loadCounter >= 2)
       {
          emit halt("Invalid data provided.");
          return;
       }
-      QString javaScript = COMPARIS::SUBMIT_SCRIPT;
-      if (COMPARIS::SUBMIT_SCRIPT.endsWith(".js")) {
-         QFile file(COMPARIS::SUBMIT_SCRIPT);
+      //      QString javaScript = COMPARIS::SUBMIT_SCRIPT;
+      QString javaScript = HOMEGATE::SUBMIT_SCRIPT;
+      if (HOMEGATE::SUBMIT_SCRIPT.endsWith(".js")) {
+         QFile file(HOMEGATE::SUBMIT_SCRIPT);
          if (!file.open(QIODevice::ReadOnly)) {
             emit halt("Invalid script provided.");
             return;
@@ -140,7 +131,7 @@ void InfoDispatcher::supplyInfos(bool ok)
          javaScript = QString::fromUtf8(file.readAll());
       }
 
-      m_page.mainFrame()->evaluateJavaScript(javaScript);
+      m_webPage->mainFrame()->evaluateJavaScript(javaScript);
 
       m_loadCounter += 1;
       emit statusUpdate("Infos submitted.");
@@ -148,7 +139,8 @@ void InfoDispatcher::supplyInfos(bool ok)
 
    else
    {
-      m_immoFetcher.run(m_page.mainFrame());
+      QObject::disconnect(this, SLOT(supplyInfos(bool)));
+      emit readyForFetching();
       emit statusUpdate("Fetching flats ...");
    }
 }
@@ -156,7 +148,8 @@ void InfoDispatcher::supplyInfos(bool ok)
 void InfoDispatcher::run()
 {
    m_loadCounter = 0;
-   m_page.mainFrame()->load(COMPARIS::URL);
+   m_webPage->mainFrame()->load(HOMEGATE::URL);
+   //   m_page.mainFrame()->load(COMPARIS::URL);
 }
 
 void InfoDispatcher::setKeywords(const QString &town, float maxRent, float minRooms, const QString &type)

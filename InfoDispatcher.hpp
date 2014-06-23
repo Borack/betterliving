@@ -22,7 +22,7 @@ class InfoDispatcher : public ScriptRunnerBase
    Q_OBJECT
 
    public:
-      InfoDispatcher();
+      InfoDispatcher(QWebPage* page);
       ~InfoDispatcher();
 
       void setKeywords(const QString& town = "", float maxRent = 0, float minRooms = 0, const QString& type = "");
@@ -30,23 +30,22 @@ class InfoDispatcher : public ScriptRunnerBase
    public slots:
       void run();
 
+   signals:
+      void readyForFetching();
+
    private slots:
       void injectJavaScriptIntoWindowObject();
       void supplyInfos(bool);
 
    private:
       void setupConnections();
-      void setupWebPage();
       void setupIDs();
       void setupProperties();
       bool isAtLeastOneValueSet() const;
 
       void submit();
 
-      ImmoFetcher m_immoFetcher;
-
       QMap<QString,NamedPair> m_ids;
-      QWebPage m_page;
 
       QString m_town;
       QString m_type;

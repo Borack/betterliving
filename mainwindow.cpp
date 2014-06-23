@@ -20,13 +20,15 @@ MainWindow::MainWindow(QWidget *parent) :
    QMainWindow(parent),
    ui(new Ui::MainWindow),
    m_running(false)
-
 {
    ui->setupUi(this);
 
+   m_infoDispatcher.reset(new InfoDispatcher(&m_page));
+   m_immoFetcher.reset(new ImmoFetcher(&m_page));
+
    setupUI();
    setupConnections();
-
+   setupWebpage();
 }
 
 MainWindow::~MainWindow()
@@ -37,9 +39,10 @@ MainWindow::~MainWindow()
 void MainWindow::setupConnections()
 {
    connect(ui->submitButton, SIGNAL(clicked()),this,SLOT(startOrStopClicked()));
-   connect(&m_infoDispatcher, SIGNAL(statusUpdate(QString)),this,SLOT(showStatus(QString)));
-   connect(&m_infoDispatcher, SIGNAL(halt(QString)),this,SLOT(haltTimer(QString)));
-   connect(&m_timer,SIGNAL(timeout()),&m_infoDispatcher,SLOT(run()));
+   connect(m_infoDispatcher.data(), SIGNAL(statusUpdate(QString)),this,SLOT(showStatus(QString)));
+   connect(m_infoDispatcher.data(), SIGNAL(halt(QString)),this,SLOT(haltTimer(QString)));
+   connect(&m_timer,SIGNAL(timeout()),m_infoDispatcher.data(),SLOT(run()));
+   connect(m_infoDispatcher.data(), SIGNAL(readyForFetching()), m_immoFetcher.data(), SLOT(run()));
 }
 
 void MainWindow::startOrStopClicked()
@@ -79,7 +82,7 @@ void MainWindow::setupUI()
 {
    setWindowTitle(tr("Better Living"));
 
-//   setWindowFlags(Qt);
+   //   setWindowFlags(Qt);
 
    ui->intervalSpinBox->setValue(g_interval);
    ui->intervalSpinBox->setMinimum(g_interval);
@@ -87,10 +90,20 @@ void MainWindow::setupUI()
 
    QSettings settings;
    ui->townEdit->setText(settings.value(TOWN_SETTINGS_KEY,"Zürich").toString());
-//   ui->typeCombo->setL settings.setValue(TYPE_SETTINGS_KEY,type);
+   //   ui->typeCombo->setL settings.setValue(TYPE_SETTINGS_KEY,type);
    ui->typeCombo->setCurrentIndex(0);
    ui->rentEdit->setText(settings.value(RENT_SETTINGS_KEY,4000).toString());
    ui->roomsEdit->setText(settings.value(ROOMS_SETTINGS_KEY,4).toString());
+}
+
+void MainWindow::setupWebpage()
+{
+   QWebSettings *webSettings = m_page.settings();
+   webSettings->setAttribute(QWebSettings::AutoLoadImages, false);
+   webSettings->setAttribute(QWebSettings::PluginsEnabled, false);
+   webSettings->setAttribute(QWebSettings::JavaEnabled, false);
+   webSettings->setAttribute(QWebSettings::JavascriptEnabled, true);
+   webSettings->setAttribute(QWebSettings::PrivateBrowsingEnabled,true);
 }
 
 void MainWindow::runDispatcher()
@@ -109,8 +122,8 @@ void MainWindow::runDispatcher()
    }
 
 
-   m_infoDispatcher.setKeywords(town,maxRent,minRooms,type);
-   m_infoDispatcher.run();
+   m_infoDispatcher->setKeywords(town,maxRent,minRooms,type);
+   m_infoDispatcher->run();
 }
 
 bool MainWindow::isAtLeastOneValueSet() const

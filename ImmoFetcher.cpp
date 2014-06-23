@@ -17,20 +17,22 @@ const QString FETCH_SCRIPT(":/ComparisFetcher.js");
 const QString HOMEGATE_FETCH_SCRIPT(":/HomegateFetcher.js");
 }
 
-ImmoFetcher::ImmoFetcher()
-: m_oldUrl()
+ImmoFetcher::ImmoFetcher(QWebPage *page)
+: ScriptRunnerBase(page)
+, m_oldUrl()
 , m_newUrls()
+, m_immoCounter(0)
 {
 
 }
 
 ImmoFetcher::~ImmoFetcher()
 {
-
 }
 
-void ImmoFetcher::run(QWebFrame*frame)
+void ImmoFetcher::run()
 {
+
    if(!m_newUrls.isEmpty())
    {
       m_oldUrl = m_newUrls.last();
@@ -42,24 +44,25 @@ void ImmoFetcher::run(QWebFrame*frame)
    setProperty("list_id",ResultIDs::RESULT_LIST_ID);
    setProperty("title_id",ResultIDs::RESULT_TITLE_ID.arg("00"));
 
-   frame->addToJavaScriptWindowObject("info",this);
+   m_webPage->mainFrame()->addToJavaScriptWindowObject("info",this);
 
-   QString javaScript = Scripts::FETCH_SCRIPT;
-   if (Scripts::FETCH_SCRIPT.endsWith(".js")) {
-      QFile file(Scripts::FETCH_SCRIPT);
+   QString javaScript = Scripts::HOMEGATE_FETCH_SCRIPT;
+   if (Scripts::HOMEGATE_FETCH_SCRIPT.endsWith(".js")) {
+      QFile file(Scripts::HOMEGATE_FETCH_SCRIPT);
       if (!file.open(QIODevice::ReadOnly)) {
          emit halt("Invalid script provided.");
          return;
       }
       javaScript = QString::fromUtf8(file.readAll());
    }
-   frame->evaluateJavaScript(javaScript);
+   m_webPage->mainFrame()->evaluateJavaScript(javaScript);
 
 }
 
 void ImmoFetcher::foundResult(const QString &description, const QString &address, const QString &price, const QString &link)
 {
-   qDebug() << "Found a flat (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
+   m_immoCounter++;
+   qDebug() << "Found flat #" << m_immoCounter << " (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
 }
 
 //void ImmoFetcher::storeLink(const QString &link)

@@ -35,15 +35,18 @@ private:
 
     void setupConnections();
     void setupUI();
+    void setupWebpage();
     bool isAtLeastOneValueSet() const;
 
     void start();
     void stop();
 
     Ui::MainWindow *ui;
-    InfoDispatcher m_infoDispatcher;
+    QScopedPointer<InfoDispatcher> m_infoDispatcher;
+    QScopedPointer<ImmoFetcher> m_immoFetcher;
     bool m_running;
     QTimer m_timer;
+    QWebPage m_page;
 
     static const QString TOWN_SETTINGS_KEY;
     static const QString RENT_SETTINGS_KEY;

@@ -3,18 +3,20 @@
 
 #include <QObject>
 #include <QByteArray>
+#include <QWebPage>
 
 class ScriptRunnerBase : public QObject
 {
       Q_OBJECT
    public:
-      ScriptRunnerBase();
+      ScriptRunnerBase(QWebPage* page);
       virtual ~ScriptRunnerBase();
 
    public slots:
       virtual void debug(const QString &value) const;
 
    protected:
+      QWebPage * m_webPage;
       virtual QByteArray loadScript(const QString& scriptName) {}
 
    signals:

@@ -1,8 +1,9 @@
 #include "ScriptRunnerBase.hpp"
 
-
-ScriptRunnerBase::ScriptRunnerBase()
+ScriptRunnerBase::ScriptRunnerBase(QWebPage *page)
+   : m_webPage(page)
 {
+
 }
 
 ScriptRunnerBase::~ScriptRunnerBase()
