@@ -53,6 +53,8 @@ class InfoDispatcher : public ScriptRunnerBase
       float m_minRooms;
 
       int m_loadCounter;
+
+      bool m_suppliedAllInfosAlready;
 };
 
 

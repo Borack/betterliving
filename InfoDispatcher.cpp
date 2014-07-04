@@ -38,12 +38,14 @@ namespace HOMEGATE {
 const QString URL("http://www.homegate.ch/mieten/wohnung-und-haus/bezirk-zuerich/trefferliste?mn=ctn_zh&ao=&oa=false&am=&tab=list&incsubs=default&fromItem=ctn_zh&be=&tid=1");
 const QString SUBMIT_SCRIPT(":/HomegateSubmit.js");
 const QString START_TITLE("Wohnung und Haus mieten in Bezirk Zürich | homegate.ch");
+const QString RESULT_TITLE("Wohnung und Haus mieten in Zürich | homegate.ch");
 //Wohnung und Haus mieten in Bezirk Zürich | homegate.ch
 }
 
 InfoDispatcher::InfoDispatcher(QWebPage *page)
    : ScriptRunnerBase(page)
    , m_loadCounter(0)
+   , m_suppliedAllInfosAlready(false)
 {
    setupConnections();
 
@@ -111,15 +113,19 @@ void InfoDispatcher::supplyInfos(bool ok)
       return;
    }
 
-   qDebug() << "MainFrame title: " << m_webPage->mainFrame()->title();
+//   setupConnections();
+
+   QDateTime local(QDateTime::currentDateTime());
+   qDebug() << local <<": MainFrame title: " << m_webPage->mainFrame()->title();
    if(m_webPage->mainFrame()->title() == HOMEGATE::START_TITLE)
       //      if(true)
+//   if(!m_suppliedAllInfosAlready)
    {
-      if(m_loadCounter >= 2)
-      {
-         emit halt("Invalid data provided.");
-         return;
-      }
+//      if(m_loadCounter >= 2)
+//      {
+//         emit halt("Invalid data provided.");
+//         return;
+//      }
       //      QString javaScript = COMPARIS::SUBMIT_SCRIPT;
       QString javaScript = HOMEGATE::SUBMIT_SCRIPT;
       if (HOMEGATE::SUBMIT_SCRIPT.endsWith(".js")) {
@@ -134,12 +140,14 @@ void InfoDispatcher::supplyInfos(bool ok)
       m_webPage->mainFrame()->evaluateJavaScript(javaScript);
 
       m_loadCounter += 1;
+      m_suppliedAllInfosAlready = true;
       emit statusUpdate("Infos submitted.");
    }
 
-   else
+   else if(m_webPage->mainFrame()->title() ==  HOMEGATE::RESULT_TITLE)
    {
-      QObject::disconnect(this, SLOT(supplyInfos(bool)));
+      m_suppliedAllInfosAlready = false;
+//      QObject::disconnect(this, SLOT(supplyInfos(bool)));
       emit readyForFetching();
       emit statusUpdate("Fetching flats ...");
    }

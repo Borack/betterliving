@@ -75,8 +75,8 @@ void ImmoFetcher::foundResult(const QString &description, const QString &address
    if(!m_apartements.contains(apartement.id()))
    {
       qDebug() << "A new apartement found!";
-      qDebug() << "Found flat #" << m_immoCounter << " (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
       m_immoCounter++;
+      qDebug() << "Found flat #" << m_immoCounter << " (" << description.trimmed() << ") at: " << address.trimmed() << " for " << price.trimmed() << ". See " << link.trimmed() << " for more details.";
       m_apartements.insert(apartement.id(), apartement);
    }
    else

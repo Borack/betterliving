@@ -1,4 +1,4 @@
-info.debug("HomegateFetcher.js started");
+//info.debug("HomegateFetcher.js started");
 
 
 var elems = document.getElementsByTagName('*');
@@ -57,7 +57,7 @@ for (i in elems)
 }
 
 
-info.debug("HomegateFetcher.js stoped");
+info.debug("HomegateFetcher.js successfully run through");
 
 
 
