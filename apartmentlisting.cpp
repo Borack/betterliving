@@ -36,3 +36,22 @@ ApartmentListing &ApartmentListing::operator =(const ApartmentListing &other)
 
    return *this;
 }
+
+
+QDataStream &operator<<(QDataStream &out, const ApartmentListing &listing)
+{
+   out << listing.m_address << listing.m_description << quint32(listing.m_prize) << listing.m_webUrl;
+   return out;
+}
+
+
+QDataStream &operator>>(QDataStream &in, ApartmentListing &listing)
+{
+   QString address;
+   QString desc;
+   quint32 prize;
+   QUrl url;
+   in >> address >> desc >> prize << url;
+   listing = ApartmentListing(desc, prize, url, address);
+   return in;
+}

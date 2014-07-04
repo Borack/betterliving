@@ -58,6 +58,8 @@ void ImmoFetcher::run()
    }
    m_webPage->mainFrame()->evaluateJavaScript(javaScript);
 
+   save("");
+
 }
 
 void ImmoFetcher::foundResult(const QString &description, const QString &address, const QString &price, const QString &link)
@@ -71,7 +73,6 @@ void ImmoFetcher::foundResult(const QString &description, const QString &address
 
    ApartmentListing apartement(description,prix.toInt(),QUrl(link), address);
 
-
    if(!m_apartements.contains(apartement.id()))
    {
       qDebug() << "A new apartement found!";
@@ -83,8 +84,17 @@ void ImmoFetcher::foundResult(const QString &description, const QString &address
    {
 //      qDebug() << "This apt is already known to me. boring.. ";
    }
-
-
 }
 
+void ImmoFetcher::save(const QString path)
+{
+   QFile file("SavedListings.dat");
+   file.open(QIODevice::WriteOnly);
+   QDataStream out(&file);   // we will serialize the data into the file
 
+   QMapIterator<QString, ApartmentListing> i(m_apartements);
+   while (i.hasNext()) {
+      i.next();
+      out << i.key() << i.value();
+   }
+}
