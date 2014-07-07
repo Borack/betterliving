@@ -12,6 +12,7 @@ class ApartmentListing : public QObject
 public:
    friend class QDataStream;
 
+   explicit ApartmentListing(QObject *parent = 0);
    explicit ApartmentListing(const QString &desc, const int &prize, const QUrl &url, const QString address, QObject *parent = 0);
    ApartmentListing(const ApartmentListing &other);
    QString id() const;

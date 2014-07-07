@@ -1,6 +1,16 @@
 #include "apartmentlisting.hpp"
 
 
+ApartmentListing::ApartmentListing(QObject *parent)
+   : QObject(parent)
+   , m_description()
+   , m_prize(0)
+   , m_webUrl()
+   , m_address()
+{
+
+}
+
 ApartmentListing::ApartmentListing(const QString &desc, const int &prize, const QUrl &url, const QString address, QObject *parent)
    : QObject(parent)
    , m_description(desc)
@@ -40,7 +50,7 @@ ApartmentListing &ApartmentListing::operator =(const ApartmentListing &other)
 
 QDataStream &operator<<(QDataStream &out, const ApartmentListing &listing)
 {
-   out << listing.m_address << listing.m_description << quint32(listing.m_prize) << listing.m_webUrl;
+   out << listing.m_address << listing.m_description << listing.m_webUrl << quint32(listing.m_prize);
    return out;
 }
 
@@ -49,9 +59,9 @@ QDataStream &operator>>(QDataStream &in, ApartmentListing &listing)
 {
    QString address;
    QString desc;
-   quint32 prize;
    QUrl url;
-   in >> address >> desc >> prize << url;
+   quint32 prize;
+   in >> address >> desc >> url >> prize;
    listing = ApartmentListing(desc, prize, url, address);
    return in;
 }

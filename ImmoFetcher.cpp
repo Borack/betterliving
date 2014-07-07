@@ -1,9 +1,10 @@
 #include "ImmoFetcher.hpp"
 
-#include <QWebFrame>
-#include <QFile>
 #include <QDebug>
 #include <QDesktopServices>
+#include <QFile>
+#include <QFileInfo>
+#include <QWebFrame>
 
 
 namespace ResultIDs
@@ -14,21 +15,30 @@ const QString RESULT_PRICE_ID("ctl00_ContentPlaceHolderApplication_ResultListUse
 }
 
 namespace Scripts{
-const QString FETCH_SCRIPT(":/ComparisFetcher.js");
-const QString HOMEGATE_FETCH_SCRIPT(":/HomegateFetcher.js");
+static const QString FETCH_SCRIPT(":/ComparisFetcher.js");
+static const QString HOMEGATE_FETCH_SCRIPT(":/HomegateFetcher.js");
+}
+
+namespace IO{
+static const QString SAVE_NAME("SavedListings.txt");
+static const quint32 MAGIC_NUMBER = 0xb0ac4000;
+static const quint32 VERSION1 = 1;
 }
 
 ImmoFetcher::ImmoFetcher(QWebPage *page)
-: ScriptRunnerBase(page)
-, m_oldUrl()
-, m_newUrls()
-, m_immoCounter(0)
+   : ScriptRunnerBase(page)
+   , m_oldUrl()
+   , m_newUrls()
+   , m_immoCounter(0)
 {
-
+   loadFromFile();
+   qDebug() << "number of apt loaded: " << m_apartements.size();
 }
 
 ImmoFetcher::~ImmoFetcher()
 {
+   saveToFile();
+   qDebug() << "number of apt saved: " << m_apartements.size();
 }
 
 void ImmoFetcher::run()
@@ -57,9 +67,6 @@ void ImmoFetcher::run()
       javaScript = QString::fromUtf8(file.readAll());
    }
    m_webPage->mainFrame()->evaluateJavaScript(javaScript);
-
-   save("");
-
 }
 
 void ImmoFetcher::foundResult(const QString &description, const QString &address, const QString &price, const QString &link)
@@ -71,7 +78,7 @@ void ImmoFetcher::foundResult(const QString &description, const QString &address
    prix.replace(".","");
    prix.replace(",","");
 
-   ApartmentListing apartement(description,prix.toInt(),QUrl(link), address);
+   ApartmentListing apartement(description.trimmed(),prix.toInt(),QUrl(link.trimmed()), address.trimmed());
 
    if(!m_apartements.contains(apartement.id()))
    {
@@ -82,15 +89,58 @@ void ImmoFetcher::foundResult(const QString &description, const QString &address
    }
    else
    {
-//      qDebug() << "This apt is already known to me. boring.. ";
+      //      qDebug() << "This apt is already known to me. boring.. ";
    }
 }
 
-void ImmoFetcher::save(const QString path)
+void ImmoFetcher::loadFromFile()
 {
-   QFile file("SavedListings.dat");
+
+   QFileInfo info(IO::SAVE_NAME);
+   if(info.exists())
+   {
+      QFile file(IO::SAVE_NAME);
+      file.open(QIODevice::ReadOnly);
+      QDataStream in(&file);   //read from file
+
+      quint32 magic;
+      in >> magic;
+      if(magic != IO::MAGIC_NUMBER)
+      {
+         qDebug() << "Invalid magic number in database file";
+         return;
+      }
+
+      quint32 version;
+      in >> version;
+
+      if(version != IO::VERSION1)
+      {
+         return;
+      }
+
+      quint32 nElements;
+      in >> nElements;
+
+      QString key;
+      ApartmentListing listing;
+      for(int i = 0; i< nElements; i++)
+      {
+         in >> key;
+         in >> listing;
+         m_apartements.insert(key, listing);
+      }
+   }
+
+}
+
+void ImmoFetcher::saveToFile()
+{
+   QFile file(IO::SAVE_NAME);
    file.open(QIODevice::WriteOnly);
    QDataStream out(&file);   // we will serialize the data into the file
+
+   out << IO::MAGIC_NUMBER << IO::VERSION1 << quint32(m_apartements.size());
 
    QMapIterator<QString, ApartmentListing> i(m_apartements);
    while (i.hasNext()) {

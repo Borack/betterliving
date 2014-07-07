@@ -28,7 +28,8 @@ public slots:
    ////   void   storeLink(const QString& link);
    //   void finished();
 
-   void save(const QString path);
+   void loadFromFile();
+   void saveToFile();
 private:
 
    QString m_oldUrl;
