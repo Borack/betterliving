@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QUrl>
 #include <QDataStream>
+#include <QAbstractTableModel>
 
 class ApartmentListing : public QObject
 {
@@ -17,8 +18,10 @@ public:
    ApartmentListing(const ApartmentListing &other);
    QString id() const;
 
-   friend QDataStream &operator<<(QDataStream &out, const ApartmentListing &listing);
-   friend QDataStream &operator>>(QDataStream &in, ApartmentListing &listing);
+   QString desc() const { return m_description; }
+   QString addr() const { return m_address; }
+   int prize() const { return m_prize; }
+   QUrl url() const { return m_webUrl; }
 
    ApartmentListing & operator =(const ApartmentListing &other);
 signals:

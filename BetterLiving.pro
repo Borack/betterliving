@@ -16,15 +16,21 @@ SOURCES += main.cpp\
     InfoDispatcher.cpp \
     ImmoFetcher.cpp \
     ScriptRunnerBase.cpp \
-    apartmentlisting.cpp
+    apartmentlisting.cpp \
+    ResultsView.cpp \
+    ApartmentModel.cpp
 
 HEADERS  += mainwindow.hpp \
     InfoDispatcher.hpp \
     ImmoFetcher.hpp \
     ScriptRunnerBase.hpp \
-    apartmentlisting.hpp
+    apartmentlisting.hpp \
+    ResultsView.hpp \
+    ApartmentModel.hpp
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+            ResultsView.ui \
+
 
 RESOURCES   += BetterLiving.qrc
 

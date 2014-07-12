@@ -7,6 +7,7 @@
 #include <QWebFrame>
 
 
+
 namespace ResultIDs
 {
 const QString RESULT_LIST_ID("result_list_ajax_container");
@@ -32,6 +33,13 @@ ImmoFetcher::ImmoFetcher(QWebPage *page)
    , m_immoCounter(0)
 {
    loadFromFile();
+//   QUrl url("http://www.nzz.ch");
+//   ApartmentListing apt("a dummy flat", 2500, url, "Rütiweg 12");
+//   m_apartements.insert(url.toString(), apt);
+
+   m_resultsView = new ResultsView(&m_apartements,0);
+   m_resultsView->show();
+
    qDebug() << "number of apt loaded: " << m_apartements.size();
 }
 
@@ -39,6 +47,9 @@ ImmoFetcher::~ImmoFetcher()
 {
    saveToFile();
    qDebug() << "number of apt saved: " << m_apartements.size();
+
+   m_resultsView->close();
+   delete m_resultsView;
 }
 
 void ImmoFetcher::run()
@@ -116,22 +127,10 @@ void ImmoFetcher::loadFromFile()
 
       if(version != IO::VERSION1)
       {
+         qDebug() << "Invalid version in database file";
          return;
       }
-
-      quint32 nElements;
-      in >> nElements;
-
-      QString key;
-      ApartmentListing listing;
-      for(int i = 0; i< nElements; i++)
-      {
-         in >> key;
-         in >> listing;
-         m_apartements.insert(key, listing);
-      }
    }
-
 }
 
 void ImmoFetcher::saveToFile()
@@ -140,11 +139,5 @@ void ImmoFetcher::saveToFile()
    file.open(QIODevice::WriteOnly);
    QDataStream out(&file);   // we will serialize the data into the file
 
-   out << IO::MAGIC_NUMBER << IO::VERSION1 << quint32(m_apartements.size());
-
-   QMapIterator<QString, ApartmentListing> i(m_apartements);
-   while (i.hasNext()) {
-      i.next();
-      out << i.key() << i.value();
-   }
+   out << IO::MAGIC_NUMBER << IO::VERSION1 << m_apartements;
 }

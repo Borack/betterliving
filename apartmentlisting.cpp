@@ -50,7 +50,7 @@ ApartmentListing &ApartmentListing::operator =(const ApartmentListing &other)
 
 QDataStream &operator<<(QDataStream &out, const ApartmentListing &listing)
 {
-   out << listing.m_address << listing.m_description << listing.m_webUrl << quint32(listing.m_prize);
+   out << listing.addr() << listing.desc() << listing.url() << quint32(listing.prize());
    return out;
 }
 

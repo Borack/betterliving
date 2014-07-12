@@ -8,6 +8,8 @@
 #include <QUrl>
 
 #include <apartmentlisting.hpp>
+#include <ApartmentModel.hpp>
+#include <ResultsView.hpp>
 
 class QWebFrame;
 
@@ -36,7 +38,8 @@ private:
    QStringList m_newUrls;
    int m_immoCounter;
 
-   QMap<QString, ApartmentListing> m_apartements;
+   ApartmentModel m_apartements;
+   ResultsView *m_resultsView;
 
 
 };
